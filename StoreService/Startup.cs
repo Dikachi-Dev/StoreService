@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using StoreService.Data;
+using StoreService.Repository;
+//using StoreService.Data;
+//using StoreService.Repository;
 
 namespace StoreService
 {
@@ -32,6 +30,17 @@ namespace StoreService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StoreService", Version = "v1" });
             });
+
+            services.AddDbContext<StoreServiceContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("StoreServiceContext")));
+            services.AddScoped(typeof(IRepo<>), typeof(Repo<>));
+            //register DB context
+            //services.AddDbContext<StoreContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("StoreContext"))
+
+            //);
+            ////Register the generic repository
+            //services.AddScoped(typeof(IRepo<>), typeof(IRepo <>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
